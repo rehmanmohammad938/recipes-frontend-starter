@@ -14,11 +14,30 @@ export default function App() {
   const [recipes, setRecipes] = useState([])
 
   useEffect(() => {
-    // TODO (Part 1): fetch `${API_URL}/api/recipes`, convert the response to JSON, and setRecipes with it
-  }, [])
+    fetch (`${API_URL}/api/recipes`)
+      .then((res) => res.json())
+      .then((data) => setRecipes(data))
+      .catch((err) => console.error("Error fetching recipes", err))
+
+    }, []);
 
   function handleAddRecipe(newRecipe) {
-    // TODO (Part 2): POST newRecipe to `${API_URL}/api/recipes`, then add the created recipe to `recipes`
+    fetch (`${API_URL}/api/recipes`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newRecipe),
+    })
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error("HTTP error!");
+      }
+      return res.json();
+    })
+    .catch((error) => {
+      console.error("Error adding recipe:", error);
+    });
   }
 
   function handleDeleteRecipe(id) {
